@@ -389,6 +389,13 @@ spec:
                 x-kubernetes-validations:
                 - message: permissionClaims are immutable
                   rule: self == oldSelf
+                - message: Resource is not a valid claimable API
+                  rule: self.all(c, (c.group == '' && c.resource == 'configmaps')
+                    || (c.group == '' && c.resource == 'secrets') || (c.group == ''
+                    && c.resource == 'serviceaccounts'))
+                - message: duplicate permission claim found
+                  rule: self.all(x, self.filter(y, y.group == x.group && y.resource
+                    == x.resource).size() == 1)
               resources:
                 description: resources is a list of resources that should be exported.
                 items:
